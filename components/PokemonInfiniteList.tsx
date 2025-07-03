@@ -1,12 +1,12 @@
+// components/PokemonInfiniteList.tsx
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { fetchPokemons, fetchPokemon, PokemonDetail } from "@/lib/pokeapi";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { fetchPokemons, fetchPokemon, PokemonDetail } from "@/lib/pokeapi";
 
 interface Props {
   initialPokemons: PokemonDetail[];
@@ -20,25 +20,95 @@ interface TypeStyles {
 
 function getTypeStyles(type: string): TypeStyles {
   switch (type) {
-    case "water":
+    case "normal":
       return {
-        border: "border-blue-500",
-        btnBg: "bg-blue-500 hover:bg-blue-600",
-      };
-    case "grass":
-      return {
-        border: "border-green-500",
-        btnBg: "bg-green-500 hover:bg-green-600",
+        border: "border-amber-400",
+        btnBg: "bg-amber-400 hover:bg-amber-500",
       };
     case "fire":
       return {
         border: "border-orange-500",
         btnBg: "bg-orange-500 hover:bg-orange-600",
       };
+    case "water":
+      return {
+        border: "border-blue-500",
+        btnBg: "bg-blue-500 hover:bg-blue-600",
+      };
+    case "electric":
+      return {
+        border: "border-yellow-400",
+        btnBg: "bg-yellow-400 hover:bg-yellow-500",
+      };
+    case "grass":
+      return {
+        border: "border-green-500",
+        btnBg: "bg-green-500 hover:bg-green-600",
+      };
+    case "ice":
+      return {
+        border: "border-teal-300",
+        btnBg: "bg-teal-300 hover:bg-teal-400",
+      };
+    case "fighting":
+      return {
+        border: "border-red-700",
+        btnBg: "bg-red-700 hover:bg-red-800",
+      };
     case "poison":
       return {
         border: "border-purple-500",
         btnBg: "bg-purple-500 hover:bg-purple-600",
+      };
+    case "ground":
+      return {
+        border: "border-yellow-600",
+        btnBg: "bg-yellow-600 hover:bg-yellow-700",
+      };
+    case "flying":
+      return {
+        border: "border-indigo-300",
+        btnBg: "bg-indigo-300 hover:bg-indigo-400",
+      };
+    case "psychic":
+      return {
+        border: "border-pink-500",
+        btnBg: "bg-pink-500 hover:bg-pink-600",
+      };
+    case "bug":
+      return {
+        border: "border-lime-500",
+        btnBg: "bg-lime-500 hover:bg-lime-600",
+      };
+    case "rock":
+      return {
+        border: "border-yellow-700",
+        btnBg: "bg-yellow-700 hover:bg-yellow-800",
+      };
+    case "ghost":
+      return {
+        border: "border-purple-700",
+        btnBg: "bg-purple-700 hover:bg-purple-800",
+      };
+    case "dragon":
+      return {
+        border: "border-indigo-600",
+        btnBg: "bg-indigo-600 hover:bg-indigo-700",
+      };
+    case "dark":
+      return {
+        border: "border-gray-700",
+        btnBg: "bg-gray-700 hover:bg-gray-800",
+      };
+    case "steel":
+      return {
+        border: "border-gray-500",
+        btnBg: "bg-gray-500 hover:bg-gray-600",
+      };
+    case "fairy":
+      return {
+        border: "border-pink-300",
+        btnBg: "bg-pink-300 hover:bg-pink-400",
       };
     default:
       return {
@@ -63,19 +133,14 @@ export default function PokemonInfiniteList({
     if (nextOffset === null) return;
     setLoading(true);
     try {
-      // 1️⃣ busca lista básica
       const list = await fetchPokemons(nextOffset, 20);
-      // 2️⃣ busca os detalhes de cada novo Pokémon
       const details = await Promise.all(
         list.results.map((p) => fetchPokemon(p.name))
       );
-      // 3️⃣ atualiza estados
       setPokemons((prev) => [...prev, ...details]);
-      if (list.next) {
-        setNextOffset(Number(new URL(list.next).searchParams.get("offset")));
-      } else {
-        setNextOffset(null);
-      }
+      setNextOffset(
+        list.next ? Number(new URL(list.next).searchParams.get("offset")) : null
+      );
     } catch (err) {
       console.error("Erro ao carregar mais:", err);
     } finally {
@@ -83,10 +148,9 @@ export default function PokemonInfiniteList({
     }
   }, [nextOffset]);
 
-  // IntersectionObserver para infinite scroll
   useEffect(() => {
     if (!sentinelRef.current) return;
-    const obs = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !loading && nextOffset !== null) {
           loadMore();
@@ -94,8 +158,8 @@ export default function PokemonInfiniteList({
       },
       { rootMargin: "200px" }
     );
-    obs.observe(sentinelRef.current);
-    return () => obs.disconnect();
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
   }, [loadMore, loading, nextOffset]);
 
   return (
@@ -103,6 +167,7 @@ export default function PokemonInfiniteList({
       {pokemons.map((p) => {
         const primaryType = p.types[0].type.name;
         const { border, btnBg } = getTypeStyles(primaryType);
+
         return (
           <Card key={p.name} className={`border-2 ${border}`}>
             <CardContent className="flex flex-col items-center">
@@ -116,11 +181,6 @@ export default function PokemonInfiniteList({
                   priority
                 />
               </div>
-              <div className="flex gap-1 mb-2">
-                {p.types.map((t) => (
-                  <Badge key={t.slot}>{t.type.name}</Badge>
-                ))}
-              </div>
               <Link href={`/pokemon/${p.name}`} className="w-full">
                 <Button className={`w-full ${btnBg}`}>Ver mais</Button>
               </Link>
@@ -131,11 +191,36 @@ export default function PokemonInfiniteList({
 
       <div ref={sentinelRef} className="col-span-full text-center py-4">
         {loading ? (
-          <p>Carregando...</p>
+          <div className="flex justify-center items-center py-4">
+            <svg
+              className="animate-spin h-8 w-8 text-gray-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8H4z"
+              />
+            </svg>
+          </div>
         ) : nextOffset === null ? (
-          <p>— Fim da lista —</p>
+          <p className="text-gray-600 font-medium py-4">
+            No more Pokémon to load
+          </p>
         ) : (
-          <p>Role para carregar mais</p>
+          <p className="text-gray-600 font-medium py-4">
+            Scroll down to load more Pokémon
+          </p>
         )}
       </div>
     </div>

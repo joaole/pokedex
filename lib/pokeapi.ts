@@ -21,21 +21,22 @@ export interface PokemonType {
 }
 
 export interface PokemonAbility {
-    ability: {
-        name: string
-        url: string
-    }
+    ability: { name: string; url: string }
     is_hidden: boolean
     slot: number
 }
 
 export interface PokemonSprites {
     front_default: string | null
-    // você pode estender com outras sprites se desejar:
-    // back_default?: string | null
-    // other?: {
-    //   'official-artwork'?: { front_default: string | null }
-    // }
+}
+
+export interface PokemonStat {
+    base_stat: number
+    effort: number
+    stat: {
+        name: string
+        url: string
+    }
 }
 
 export interface PokemonDetail {
@@ -46,31 +47,19 @@ export interface PokemonDetail {
     types: PokemonType[]
     abilities: PokemonAbility[]
     sprites: PokemonSprites
+    stats: PokemonStat[]        // ← aqui
 }
 
 const API_BASE = 'https://pokeapi.co/api/v2'
 
-/**
- * Busca uma página de Pokémon (offset, limit)
- */
-export async function fetchPokemons(
-    offset = 0,
-    limit = 20
-): Promise<PokemonListResponse> {
+export async function fetchPokemons(offset = 0, limit = 20): Promise<PokemonListResponse> {
     const res = await fetch(`${API_BASE}/pokemon?offset=${offset}&limit=${limit}`)
-    if (!res.ok) {
-        throw new Error(`Falha ao buscar lista de Pokémon (status ${res.status})`)
-    }
+    if (!res.ok) throw new Error(`Falha ao buscar lista (status ${res.status})`)
     return res.json()
 }
 
-/**
- * Busca os detalhes completos de um Pokémon pelo nome ou ID
- */
 export async function fetchPokemon(nameOrId: string | number): Promise<PokemonDetail> {
     const res = await fetch(`${API_BASE}/pokemon/${nameOrId}`)
-    if (!res.ok) {
-        throw new Error(`Pokémon "${nameOrId}" não encontrado (status ${res.status})`)
-    }
+    if (!res.ok) throw new Error(`Pokémon "${nameOrId}" não encontrado`)
     return res.json()
 }
