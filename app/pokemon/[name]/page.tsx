@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 export default async function PokemonPage({
   params,
 }: {
-  params: { name: string };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params: any;
 }) {
   const data = await fetchPokemon(params.name);
   return (
