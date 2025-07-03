@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export default async function PokemonPage({ params }) {
+export default async function PokemonPage({
+  params,
+}: {
+  params: { name: string };
+}) {
   const data = await fetchPokemon(params.name);
   return (
     <div className="p-4 max-w-xl mx-auto">
@@ -17,7 +21,7 @@ export default async function PokemonPage({ params }) {
           <h1 className="text-2xl capitalize">{data.name}</h1>
           <div className="mx-auto">
             <Image
-              src={data.sprites.front_default}
+              src={data.sprites.front_default!}
               alt={data.name}
               width={96}
               height={96}
