@@ -1,26 +1,112 @@
+/* global.css */
+
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ----------------------------------------
+   1. Safelist das classes dinâmicas usadas
+   (substitui o safelist em tailwind.config.js)
+---------------------------------------- */
+@source inline("
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* background/textos */
+  bg-background bg-foreground text-background text-foreground
+  /* Cores de tipos Pokémon */
+  bg-normal bg-fire bg-water bg-electric bg-grass bg-ice bg-fighting bg-poison bg-ground bg-flying bg-psychic bg-bug bg-rock bg-ghost bg-dragon bg-dark bg-steel bg-fairy border-normal border-fire border-water border-electric border-grass border-ice border-fighting border-poison border-ground border-flying border-psychic border-bug border-rock border-ghost border-dragon border-dark border-steel border-fairy text-normal text-fire text-water text-electric text-grass text-ice text-fighting text-poison text-ground text-flying text-psychic text-bug text-rock text-ghost text-dragon text-dark text-steel text-fairy hover:bg-normal hover:bg-fire hover:bg-water hover:bg-electric hover:bg-grass hover:bg-ice hover:bg-fighting hover:bg-poison hover:bg-ground hover:bg-flying hover:bg-psychic hover:bg-bug hover:bg-rock hover:bg-ghost hover:bg-dragon hover:bg-dark hover:bg-steel hover:bg-fairy hover:text-white ");
 
-@media (prefers-color-scheme: dark) {
+
+  /* ----------------------------------------
+   2. Definição de variáveis de tema
+   (cores, fontes e tokens CSS)
+---------------------------------------- */
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+    /* Cores base do layout */
+    --background: #ffffff;
+    --foreground: #171717;
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+    /* Fontes (por exemplo, Geist Sans / Mono) */
+    --font-sans: var(--font-geist-sans, system-ui, sans-serif);
+    --font-mono: var(--font-geist-mono, ui-monospace, monospace);
+  }
+
+  @theme inline {
+    /* Mapeia tokens para utilitários bg-*, text-*, border-*, fill-* */
+
+    /* Cores de layout */
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    /* Fontes */
+    --font-sans: var(--font-sans);
+    --font-mono: var(--font-mono);
+
+    /* Cores de tipos Pokémon */
+    --color-normal: #A8A77A;
+    --color-fire: #EE8130;
+    --color-water: #6390F0;
+    --color-electric: #F7D02C;
+    --color-grass: #7AC74C;
+    --color-ice: #96D9D6;
+    --color-fighting: #C22E28;
+    --color-poison: #A33EA1;
+    --color-ground: #E2BF65;
+    --color-flying: #A98FF3;
+    --color-psychic: #F95587;
+    --color-bug: #A6B91A;
+    --color-rock: #B6A136;
+    --color-ghost: #735797;
+    --color-dragon: #6F35FC;
+    --color-dark: #705746;
+    --color-steel: #B7B7CE;
+    --color-fairy: #D685AD;
+  }
+
+  /* ----------------------------------------
+   3. Tema para modo escuro automático
+---------------------------------------- */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0a0a0a;
+      --foreground: #ededed;
+    }
+  }
+
+  /* ----------------------------------------
+   4. Reset base e estilos globais
+---------------------------------------- */
+  html {
+    box-sizing: border-box;
+    font-family: var(--font-sans);
+  }
+
+  *, *::before, *::after {
+    box-sizing: inherit;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+
+  /* Links padrão */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Imagens responsivas */
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Exemplo de utilitários customizados */
+  .btn {
+    @apply inline-block px-4 py-2 rounded-md font-medium;
+  }
+
+  /* Fim do global.css */
