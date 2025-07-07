@@ -11,6 +11,7 @@ export interface PokemonListResponse {
 }
 
 export interface PokemonType {
+    toLowerCase(): unknown
     slot: number
     type: {
         name: string
