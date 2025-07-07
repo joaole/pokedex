@@ -66,9 +66,9 @@ export default async function PokemonDetailPage({
     <div
       className={`min-h-screen ${backgroundColorClass} flex flex-col items-center p-4`}
     >
-      <Link href="/" className="flex items-center text-white mb-4">
+      <Link href="/" className="flex items-center text-white! mb-4">
         <ChevronLeft />
-        Back to Pokedex
+        <span className="ml-2">Back to Home</span>
       </Link>
       <div className="relative w-full max-w-md bg-white rounded-lg shadow-lg p-6 mt-20">
         <h1 className="text-5xl font-bold text-white capitalize text-center absolute -top-16 left-1/2 -translate-x-1/2 z-10">
