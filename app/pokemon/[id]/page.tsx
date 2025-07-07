@@ -56,9 +56,10 @@ export function generateStaticParams() {
 export default async function PokemonDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const pokemon = await fetchPokemonDetail(Number(params.id));
+  const { id } = await params;
+  const pokemon = await fetchPokemonDetail(Number(id));
 
   const primaryType =
     pokemon.types.find((t) => t.slot === 1)?.type.name || "normal";
