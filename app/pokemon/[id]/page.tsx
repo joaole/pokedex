@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
+// Função utilitária para definir as cores dos tipos de Pokémon
 const getTypeColorClass = (type: string) => {
   switch (type) {
     case "normal":
@@ -46,12 +47,18 @@ const getTypeColorClass = (type: string) => {
   }
 };
 
+// generateStaticParams força o Next.js a inferir corretamente os tipos da rota dinâmica
+export function generateStaticParams() {
+  return []; // Pode ser preenchido futuramente se quiser pré-gerar páginas
+}
+
+// Componente da página de detalhes do Pokémon
 export default async function PokemonDetailPage({
   params,
 }: {
-  params: { id: number };
+  params: { id: string };
 }) {
-  const pokemon = await fetchPokemonDetail(params.id);
+  const pokemon = await fetchPokemonDetail(Number(params.id));
 
   const primaryType =
     pokemon.types.find((t) => t.slot === 1)?.type.name || "normal";
@@ -70,10 +77,12 @@ export default async function PokemonDetailPage({
         <ChevronLeft />
         <span className="ml-2">Back to Home</span>
       </Link>
+
       <div className="relative w-full max-w-md bg-white rounded-lg shadow-lg p-6 mt-20">
         <h1 className="text-5xl font-bold text-white capitalize text-center absolute -top-16 left-1/2 -translate-x-1/2 z-10">
           {pokemon.name}
         </h1>
+
         <div className="relative w-48 h-48 mx-auto -mt-24 mb-4 z-20">
           <Image
             src={pokemon.sprites.front_default!}
@@ -83,6 +92,7 @@ export default async function PokemonDetailPage({
             priority
           />
         </div>
+
         <div className="flex justify-center space-x-2 mb-4">
           {pokemon.types.map((type) => (
             <span
@@ -95,6 +105,7 @@ export default async function PokemonDetailPage({
             </span>
           ))}
         </div>
+
         <PokeAbout pokemon={pokemon} />
         <PokemonStats stats={stats} primaryType={primaryType} />
       </div>
